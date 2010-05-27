@@ -11,13 +11,16 @@ MAS jdriver2itsumo {
    environment: env.Env1
 
    agents:		
-		proxy proxy.asl [host="localhost", port=30001]
-		agentArchClass arch.AgProxyArch;
+		driver proxy.asl [host="localhost", port=30001]
+		agentArchClass arch.AgProxyArch
+		#2;
 		
+		/*
 		driver0 driver0.asl 
     	agentArchClass arch.AgDriverArch 
     	agentClass agent.SelectEvent 
     	beliefBaseClass agent.UniqueBelsBB("gsize(_,_)","steps(_)","ally_pos(key,_,_)","corral(_,_,_,_)","target(_,_)");
+		*/
 		
 		/*
 		driver driver.asl 

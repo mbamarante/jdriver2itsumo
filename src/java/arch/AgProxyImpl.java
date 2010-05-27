@@ -3,6 +3,7 @@ package arch;
 import static jason.asSyntax.ASSyntax.createLiteral;
 import static jason.asSyntax.ASSyntax.createNumber;
 import static jason.asSyntax.ASSyntax.createStructure;
+import jason.RevisionFailedException;
 import jason.asSyntax.Literal;
 import jason.environment.grid.Location;
 
@@ -34,13 +35,13 @@ import org.w3c.dom.NodeList;
 public class AgProxyImpl implements Runnable {
 
 	@SuppressWarnings("serial")
-	private class SocketClosedException extends Exception {}
+	public class SocketClosedException extends Exception {}
 	public static ByteBuffer buffer = ByteBuffer.allocate(10000);
 	static int BUFFSIZE = 128000;
 	
-    String         rid; // the response id of the current cycle
-	AgProxyArch arq;
-	boolean        running = true;
+    String         	rid; // the response id of the current cycle
+	AgProxyArch    	arq;
+	boolean        	running = true;
 	private boolean connected = false;
 	
 	private Socket socket;
@@ -65,26 +66,11 @@ public class AgProxyImpl implements Runnable {
 		}
 		setPort(port);
 		setHost(host);
-//		setUsername(username);
-//		setPassword(password);
 		
-//		this.arq = arq;
-//		try {
-//			documentbuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-//			//transformer = TransformerFactory.newInstance().newTransformer();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		
-        connect();
-		//monitor.start();
-		
-		//send a message...
-//		try {
-//			sendMessage("a;1");
-//		} catch (SocketClosedException e) {
-//			logger.log(Level.SEVERE, "Error sending message...");
-//		}
+		this.arq = arq;
+        
+		connect();
+		monitor.start();
 	}
 	
 	protected boolean connect() {
@@ -98,12 +84,6 @@ public class AgProxyImpl implements Runnable {
 			logger.log(Level.FINE, "connection established successuly!");
 			connected = true;
 			
-//			if (doAuthentication(username, password)) {
-//				processLogIn();
-//				connected = true;
-//			} else {
-//				logger.log(Level.SEVERE, "authentication failed");
-//            }                   
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Connection exception "+e);			
 		}			
@@ -145,12 +125,7 @@ public class AgProxyImpl implements Runnable {
 			}
 			
 			buffer.write(read);
-//			
-//			if (buffer.toString().length()>0)
-//				System.out.println(buffer.toString()); else
-//					System.out.println("FIM!");
-//			
-//			System.out.println("read:"+inputstream.read());
+
 			if (inputstream.available()>0)
 				read = inputstream.read(); else
 					break;
@@ -192,34 +167,27 @@ public class AgProxyImpl implements Runnable {
     	
     }
 	
-    public void run() {
+    private void processMessage(String message) throws RevisionFailedException{
     	
-    	String ans;
+    	if (message.length()>0){
+    		logger.log(Level.INFO, "receive answer: " + message);
+
+    		//inserir origem/destino 
+    		if (message.contains("od("));
+	    		arq.addBel(Literal.parseLiteral(message));
+    	}
+    	
+    }
+    
+    public void run() {
     	
         while (running) {
             try {
                 if (isConnected()) {
                 	
             		//receiving info from socket
-                	ans = receiveStringPacket();
+                	processMessage(receiveStringPacket());
                 	
-                	if (ans.length()>0)
-                		logger.log(Level.INFO, "receive answer: " + ans);
-                	
-//                    Document doc = receiveDocument();
-//                    if (doc != null) {
-//                        Element el_root = doc.getDocumentElement();
-//        
-//                        if (el_root != null) {
-//                            if (el_root.getNodeName().equals("message")) {
-//                                processMessage(el_root);
-//                            } else {
-//                                logger.log(Level.SEVERE,"unknown document received");
-//                            }
-//                        } else {
-//                            logger.log(Level.SEVERE, "no document element found");
-//                        }
-//                    }
                 } else {
                     // wait auto-reconnect
                     logger.info("waiting reconnection...");
@@ -230,160 +198,6 @@ public class AgProxyImpl implements Runnable {
             }
         }
     }
-
-	
-	public void processLogIn() {
-		logger.info("---#-#-#-#-#-#-- login ok.");
-	}
-
-	public void processSimulationStart(Element simulation, long currenttime) {
-		try {
-			//opponent = simulation.getAttribute("opponent");
-			//arq.addBel(Literal.parseLiteral("opponent("+simulationID+","+opponent+")"));
-//            arq.setSimId(simulation.getAttribute("id"));
-//
-//			int gsizex = Integer.parseInt(simulation.getAttribute("gsizex"));
-//			int gsizey = Integer.parseInt(simulation.getAttribute("gsizey"));
-//            arq.gsizePerceived(gsizex,gsizey, simulation.getAttribute("opponent"));
-//
-//			int corralx0 = Integer.parseInt(simulation.getAttribute("corralx0"));
-//            int corralx1 = Integer.parseInt(simulation.getAttribute("corralx1"));
-//            int corraly0 = Integer.parseInt(simulation.getAttribute("corraly0"));
-//            int corraly1 = Integer.parseInt(simulation.getAttribute("corraly1"));
-//            arq.corralPerceived(new Location(corralx0, corraly0), new Location(corralx1, corraly1));
-//
-//			int steps  = Integer.parseInt(simulation.getAttribute("steps"));
-//            arq.stepsPerceived(steps);
-//            
-//            int lineOfSight = Integer.parseInt(simulation.getAttribute("lineOfSight"));
-//            arq.lineOfSightPerceived(lineOfSight);
-//			
-//			logger.info("Start simulation processed ok!");
-//
-//			rid = simulation.getAttribute("id");
-//			//sendAction(null); // TODO: check if still needed. the start requires an answer!
-			
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "error processing start",e);
-		}
-	}
-
-	public void processSimulationEnd(Element result, long currenttime) {
-		try {
-            String score = result.getAttribute("score") +"-"+ result.getAttribute("result");
-			logger.info("End of simulation :"+score);
-            arq.simulationEndPerceived(result.getAttribute("result"));
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "error processing end",e);
-		}
-	}
-
-	public void processRequestAction(Element perception, long currenttime, long deadline) {
-		try {
-			List<Literal> percepts = new ArrayList<Literal>();
-			
-//			rid = perception.getAttribute("id");
-//			int agx   = Integer.parseInt(perception.getAttribute("posx"));
-//			int agy   = Integer.parseInt(perception.getAttribute("posy"));
-//			int step  = Integer.parseInt(perception.getAttribute("step"));
-//            int score = Integer.parseInt(perception.getAttribute("score"));
-//
-//            // update model
-//			arq.locationPerceived(agx, agy); // also calls clearAgView
-//            arq.setScore(score);
-//
-//            // add location in perception
-//			Literal lpos = createLiteral("pos", createNumber(agx), createNumber(agy), createNumber(step));
-//			percepts.add(lpos);
-//
-//			arq.initKnownCows();
-//
-//			List<Location> switches = new ArrayList<Location>(); // switch should be perceived later
-//			
-//			//int enemyId = 1;
-//			
-//			// add in perception what is around
-//			NodeList nl = perception.getElementsByTagName("cell");
-//			for (int i=0; i < nl.getLength(); i++) {
-//				Element cell = (Element)nl.item(i);
-//				int cellx = Integer.parseInt(cell.getAttribute("x"));
-//                int celly = Integer.parseInt(cell.getAttribute("y"));
-//				int absx  = agx + cellx;
-//				int absy  = agy + celly;
-//				
-//				NodeList cnl = cell.getChildNodes();
-//				for (int j=0; j < cnl.getLength(); j++) {
-//					if (cnl.item(j).getNodeType() == Element.ELEMENT_NODE && cellx != 0 && celly != 0) {
-//
-//						Element type = (Element)cnl.item(j);
-//						if (type.getNodeName().equals("agent")) {
-//							if (type.getAttribute("type").equals("ally")) {
-//							    // allies are managed by communication
-//								//percepts.add(CowboyArch.createCellPerception(cellx, celly, CowboyArch.aALLY));
-//							} else if (type.getAttribute("type").equals("enemy")) {
-//	                            //Structure le = new Literal("enemy");
-//	                            //le.addTerm(new NumberTermImpl( (enemyId++) )); // we need an id to work with UniqueBB
-//								//percepts.add(CowboyArch.createCellPerception(cellx, celly, le));
-//                                arq.enemyPerceived(absx, absy);
-//							}
-//                            
-//                        } else if (type.getNodeName().equals("cow")) {
-//                            // ignore cows in the border, they complicate all :-)
-//                            if (absx < arq.getModel().getWidth()-1 && absx != 0 && absy != 00 && absy < arq.getModel().getHeight()-1) {
-//                                int cowId = Integer.parseInt(type.getAttribute("ID"));
-//                                arq.cowPerceived(cowId, absx, absy);
-//                            }
-//                            
-//                        } else if (type.getNodeName().equals("obstacle")) { 
-//							arq.obstaclePerceived(absx, absy);
-//                        } else if (type.getNodeName().equals("corral") && type.getAttribute("type").equals("enemy")) { 
-//                            arq.enemyCorralPerceived(absx, absy);
-//                        } else if (type.getNodeName().equals("fence")) {
-//                            //logger.info("iiii fence "+cellx+" "+celly+"  - "+absx+" "+absy+" - "+agx+" "+agy);
-//                            boolean open = type.getAttribute("open").equals("true");
-//                            arq.fencePerceived(absx, absy, open);
-//                            /*
-//                            Atom state;
-//                            if (open) 
-//                                state = CowboyArch.aOPEN;
-//                            else
-//                                state = CowboyArch.aCLOSED;                            
-//                            Literal lf = createLiteral(CowboyArch.aFENCE.toString(), createNumber(absx), createNumber(absy), state);
-//                            percepts.add(lf);
-//                            */
-//                        } else if (type.getNodeName().equals("switch")) {
-//                            switches.add(new Location(absx, absy));
-//                        //} else if (type.getNodeName().equals("empty")) {
-//                        //    percepts.add(CowboyArch.createCellPerception(cellx, celly, CowboyArch.aEMPTY));
-//						}
-//					}
-//				}
-//			}
-//			
-//			// puts cows in perception
-//			arq.removeFarCowsFromPerception();
-//			for (int id: arq.getPerceivedCows().keySet()) {
-//			    Location l = arq.getPerceivedCows().get(id);
-//                Literal lc = createLiteral("cow", createNumber(id), createNumber(l.x), createNumber(l.y));
-//                lc.addAnnot(createStructure("step", createNumber( arq.getLastSeenCow(id))));
-//                percepts.add(lc);
-//			}
-//			
-//			// put switches
-//			for (Location l: switches) {
-//                arq.switchPerceived(l.x, l.y);
-//			}
-//	
-//            //if (logger.isLoggable(Level.FINE)) 
-//            logger.info("Request action for "+lpos+" / rid: "+rid+" / percepts: "+percepts);            
-//			
-//			//arq.sendCowsToTeam();
-//			arq.startNextStep(step, percepts);
-//			
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "error processing request",e);
-		}
-	}
 
 	public void sendAction(String action) {
 		try {
@@ -406,11 +220,6 @@ public class AgProxyImpl implements Runnable {
 			logger.log(Level.SEVERE,"Error sending action.",e);
 		}
 	}
-
-//	@Override
-//	public void processPong(String pong) {
-//		monitor.processPong(pong);
-//	}
 
 	/** checks the connection */
 	class ConnectionMonitor extends Thread {
