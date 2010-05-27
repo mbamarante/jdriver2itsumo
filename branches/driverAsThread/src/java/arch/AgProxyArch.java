@@ -1,16 +1,16 @@
 package arch;
 
+import static jason.asSyntax.ASSyntax.createLiteral;
+import static jason.asSyntax.ASSyntax.createNumber;
 import jason.JasonException;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
 import jason.asSemantics.ActionExec;
-import jason.asSemantics.Message;
 import jason.asSyntax.Literal;
 import jason.mas2j.ClassParameters;
 import jason.runtime.Settings;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import agent.SelectEvent;;
+import arch.AgProxyImpl.SocketClosedException;
 
 /** 
  * 
@@ -32,9 +32,6 @@ import agent.SelectEvent;;
  *
  */			 //Agent Customisation Architecture (ACArchitecture)  
 public class AgProxyArch extends AgArch {
-
-	@SuppressWarnings("serial")
-	private class SocketClosedException extends Exception {}
 	
     public static final int   actionTimeout = 2000; // timeout to send an action
     
@@ -69,8 +66,17 @@ public class AgProxyArch extends AgArch {
 								networkport);
 		
 		new Thread(proxy,"AgProxy").start();
+	
+		int agId = Integer.parseInt(getAgName().replace("driver", ""));
+		
+		try {
+			proxy.sendMessage("a;"+agId+";");
+		} catch (SocketClosedException e) {
+			logger.log(Level.SEVERE, "error sending message...");
+		}
+		
 	}
-
+	
 	public AgProxyImpl getProxy() {
 		
 		return proxy;
@@ -102,9 +108,9 @@ public class AgProxyArch extends AgArch {
 	}
 	
     void setSimStep(int s) {
-        ((SelectEvent)getTS().getAg()).cleanCows();
-    	simStep = s;
-    	super.setCycleNumber(simStep);
+//        ((SelectEvent)getTS().getAg()).cleanCows();
+//    	simStep = s;
+//    	super.setCycleNumber(simStep);
 //		if (view != null) view.setCycle(simStep);
 //        if (writeStatusThread != null) writeStatusThread.go();
     }
@@ -136,11 +142,21 @@ public class AgProxyArch extends AgArch {
 //        if (view != null) view.dispose();
 //    }
 	
+    private void setStart(int s) throws RevisionFailedException {
+    	addBel(createLiteral("start", createNumber(s)));
+    }
+	
+    protected void addBel(Literal l) throws RevisionFailedException {
+    	getTS().getAg().addBel(l);
+    }
+	
+    
 	//@Override
     void simulationEndPerceived(String result) throws RevisionFailedException {
 	    percepts = new ArrayList<Literal>();
 	    //super.simulationEndPerceived(result);
     	getTS().getAg().addBel(Literal.parseLiteral("end_of_simulation("+result+")"));
+    	
 //    	model   = null;
 //        playing = false;
 //        perceivedCows.clear();

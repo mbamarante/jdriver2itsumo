@@ -12,9 +12,9 @@ an_agent(Ag) :-
 
 /* Plans */
 
-@c1
+/*@c1
 +!connect[source(D)]
 	: true <-
 	.print(D);
 	jia.proxyConnectDriver(D).
-		
+	*/	
