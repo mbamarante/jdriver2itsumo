@@ -1,0 +1,31 @@
+/*
+    Jason Project
+
+	author: maicon
+    -- created on May 24, 2010
+*/
+
+MAS jdriver2itsumo {
+   infrastructure: Centralised
+
+   environment: env.Env1
+
+   agents:		
+		proxy proxy.asl [host="localhost", port=30001]
+		agentArchClass arch.AgProxyArch;
+		
+		driver0 driver0.asl 
+    	agentArchClass arch.AgDriverArch 
+    	agentClass agent.SelectEvent 
+    	beliefBaseClass agent.UniqueBelsBB("gsize(_,_)","steps(_)","ally_pos(key,_,_)","corral(_,_,_,_)","target(_,_)");
+		
+		/*
+		driver driver.asl 
+    	agentArchClass arch.DriverArch 
+    	agentClass agent.SelectEvent 
+    	beliefBaseClass agent.UniqueBelsBB("gsize(_,_)","steps(_)","ally_pos(key,_,_)","corral(_,_,_,_)","target(_,_)")
+		#9;
+		*/
+		
+   aslSourcePath: "src/asl"; 
+}
