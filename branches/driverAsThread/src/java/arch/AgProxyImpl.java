@@ -167,14 +167,27 @@ public class AgProxyImpl implements Runnable {
     	
     }
 	
-    private void processMessage(String message) throws RevisionFailedException{
+    private void processMessage(String message) throws RevisionFailedException, SocketClosedException{
     	
     	if (message.length()>0){
+    		
     		logger.log(Level.INFO, "receive answer: " + message);
 
     		//inserir origem/destino 
-    		if (message.contains("od("));
+    		if (message.contains("od("))
 	    		arq.addBel(Literal.parseLiteral(message));
+	    	else
+	    	//solicita uma ação do agente (r=request)
+	    	if (message.charAt(0) == 'r'){
+	    		//não tem nada para fazer = x;0;
+	    		sendMessage("x;0;");
+	    	}
+	    	else
+	    	//fim da simulação, não processa mais mensagens
+	    	if (message.contains("end;")){
+	    		finish();
+	    	}
+    		
     	}
     	
     }
