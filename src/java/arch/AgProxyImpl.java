@@ -174,8 +174,12 @@ public class AgProxyImpl implements Runnable {
     		logger.log(Level.INFO, "receive answer: " + message);
 
     		//inserir origem/destino 
-    		if (message.contains("od("))
-	    		arq.addBel(Literal.parseLiteral(message));
+    		if (message.contains("od;")){
+    			String od[] = message.split(";");
+    			logger.log(Level.INFO, od[1] + "|" + od[2]);
+	    		arq.addBel(Literal.parseLiteral("start("+od[1]+")"));
+	    		arq.addBel(Literal.parseLiteral("goal("+od[2]+")"));
+    		}
 	    	else
 	    	//solicita uma ação do agente (r=request)
 	    	if (message.charAt(0) == 'r'){
