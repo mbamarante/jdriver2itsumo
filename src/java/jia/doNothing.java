@@ -10,19 +10,15 @@ import jason.*;
 import jason.asSemantics.*;
 import jason.asSyntax.*;
 
-public class driveOnPath extends DefaultInternalAction {
+public class doNothing extends DefaultInternalAction {
 
-	private Logger logger = Logger.getLogger(driveOnPath.class.getName());
+	private Logger logger = Logger.getLogger(doNothing.class.getName());
 	
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
     	
-    	int agId = -1;
-    	agId = Integer.parseInt(args[0].toString().replace("driver", ""));
-        logger.log(Level.INFO, "setMessage: goto;"+args[0]+";"+args[1]+";");
-    	
     	AgProxyArch arch = (AgProxyArch)ts.getUserAgArch();
-    	arch.setMessage("goto;"+args[0]+";"+args[1]+";");
+    	arch.setMessage("x;0;");
     	
         // everything ok, so returns true
         return true;
