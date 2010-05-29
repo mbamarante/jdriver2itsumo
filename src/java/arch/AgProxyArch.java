@@ -150,6 +150,9 @@ public class AgProxyArch extends AgArch {
     	getTS().getAg().addBel(l);
     }
 	
+    protected void delBel(Literal l) throws RevisionFailedException {
+    	getTS().getAg().abolish(l, null);
+    }
     
 	//@Override
     void simulationEndPerceived(String result) throws RevisionFailedException {
