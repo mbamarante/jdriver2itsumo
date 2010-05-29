@@ -177,6 +177,8 @@ public class AgProxyImpl implements Runnable {
     		if (message.contains("od;")){
     			String od[] = message.split(";");
     			logger.log(Level.INFO, od[1] + "|" + od[2]);
+    			arq.delBel(Literal.parseLiteral("start(_)"));
+    			arq.delBel(Literal.parseLiteral("goal(_)"));
 	    		arq.addBel(Literal.parseLiteral("start("+od[1]+")"));
 	    		arq.addBel(Literal.parseLiteral("goal("+od[2]+")"));
     		}
@@ -184,12 +186,16 @@ public class AgProxyImpl implements Runnable {
 	    	//solicita uma ação do agente (r=request)
 	    	if (message.charAt(0) == 'r'){
 	    		//não tem nada para fazer = x;0;
-	    		sendMessage("x;0;");
+	    		logger.log(Level.INFO, "actionRequested(1)");
+	    		sendMessage("x;0;"); //ação no proximo ciclo...
+	    		arq.delBel(Literal.parseLiteral("actionRequested(_)"));
+	    		arq.addBel(Literal.parseLiteral("actionRequested(1)"));
 	    	}
 	    	else
 	    	//fim da simulação, não processa mais mensagens
 	    	if (message.contains("end;")){
 	    		finish();
+	    		sendMessage("x;0;");
 	    	}
     		
     	}
