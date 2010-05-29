@@ -188,13 +188,22 @@ public class AgProxyImpl implements Runnable {
 	    		arq.delBel(Literal.parseLiteral("decide(_)"));
 	    		arq.addBel(Literal.parseLiteral("decide(something)"));
 	    		
-	    		String msg = arq.getMessage();
-	    		if (msg.length()>0){
-		    		sendMessage(msg);
-		    		if (msg.contains("goto"))
-		    			logger.log(Level.INFO, "goto sent @ step " + message.substring(2));
-		    		//arq.setMessage("x;0;");
+	    		String msg = "";
+	    		
+	    		while (true){
+	    			msg = arq.getMessage();
+	    			if (msg.length()>0)
+	    				break;
 	    		}
+	    		
+	    		//if (msg.length()>0){
+		    		sendMessage(msg);
+		    		
+		    		if (msg.contains("goto")){
+		    			arq.setMessage("");
+		    			logger.log(Level.INFO, "goto sent @ step " + message.substring(2));
+		    		}
+		    		//arq.setMessage("x;0;");
 	    	}
 	    	else
 	    	//fim da simulação, não processa mais mensagens
