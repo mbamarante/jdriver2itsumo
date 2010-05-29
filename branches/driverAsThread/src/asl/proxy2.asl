@@ -4,11 +4,9 @@
 
 /*rules*/
 
-has_od :- 
-	start(S) &
-	goal(G) &
-	S > 0 & 
-	G > 0.
+has_od(S,G) :- 
+	start(S) & goal(G) &
+	S > 0 & G > 0.
 
 an_agent(Ag) :-
    .all_names(L) & .length(L,X) & .random(R,0) &
@@ -16,44 +14,42 @@ an_agent(Ag) :-
 
 /*beliefs*/
 
-status(driving). /*[parked,driving]*/
-driving(0).
+status(parked). /*[parked,start_engine,driving]*/
+decide(nothing). /*[nothing,something]*/
+
 start(0).
 goal(0).
-actionRequested(0).
-
 
 /* Initial goals */
 
-!start_engine.
+/* !start_engine. */
 
 
 /* Plans */
 
 @d1
-+!start_engine : driving(D) & D==0 & has_od & start(S) & goal(G) & actionRequested(A) & A>0
++!start_engine : status(parked) & decide(something) & has_od(S,G)
 	<-  .concat("not driving and [O,D] is [",S,",",G,"] -- start engine!", M);
 		.print(M);
 		!drive(S,G).
 		
-+!start_engine : actionRequested(A) & A==0 
++!start_engine : status(parked) & decide(nothing)
 	<-  /*.concat("no action!", M);
 		.print(M);*/
 		!!start_engine.
-		
-+!start_engine : driving(D) & D==0
-	<-  /*.concat("no action!", M);
-		.print(M);*/
-		!!start_engine.
-	
-+!drive(S,G) : driving(D) & D==0
-	<-  -+driving(1); /* update belief base */
+
+/*		
++!start_engine : status(parked)
+	<- !!start_engine.*/
+
++!drive(S,G) : status(parked)
+	<-  -+status(driving); /* update belief base */
 		.concat("driving from ", S ," to ", G , M);
 		.print(M);
 		-start_engine;
 		jia.driveOnPath(S,G).
 
-+!drive(S,G) :driving(D) & D>0
++!drive(S,G) : status(driving)
 	<-	true.
 
 /*@c1

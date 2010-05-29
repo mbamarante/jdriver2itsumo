@@ -40,6 +40,7 @@ public class AgProxyArch extends AgArch {
 	private Logger logger;
 	private int networkport;
 	private String networkhost;
+	private String networkmessage;
 
 	private AgProxyImpl       proxy;
 	private List<Literal> percepts = new ArrayList<Literal>();
@@ -53,6 +54,7 @@ public class AgProxyArch extends AgArch {
 
         networkhost = stts.getUserParameter("host");
         networkport = Integer.parseInt(stts.getUserParameter("port"));
+        setMessage("x;0;");
         
 		if (networkhost.startsWith("\"")) {
 			networkhost = networkhost.substring(1,networkhost.length()-1);
@@ -74,7 +76,7 @@ public class AgProxyArch extends AgArch {
 		} catch (SocketClosedException e) {
 			logger.log(Level.SEVERE, "error sending message...");
 		}
-		
+
 	}
 	
 	public AgProxyImpl getProxy() {
@@ -82,6 +84,15 @@ public class AgProxyArch extends AgArch {
 		return proxy;
 	}
 	
+	public void setMessage(String message){
+		
+		networkmessage = message;
+	}
+
+	public String getMessage(){
+		
+		return networkmessage;
+	}
 	@Override
 	public void stopAg() {
 	    super.stopAg();
