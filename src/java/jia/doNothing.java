@@ -18,7 +18,7 @@ public class doNothing extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
     	
     	AgProxyArch arch = (AgProxyArch)ts.getUserAgArch();
-    	arch.setMessage("x;0;");
+    	//arch.setMessage("x;0;");
     	
         // everything ok, so returns true
         return true;

@@ -54,7 +54,8 @@ public class AgProxyArch extends AgArch {
 
         networkhost = stts.getUserParameter("host");
         networkport = Integer.parseInt(stts.getUserParameter("port"));
-        setMessage("x;0;");
+        //setMessage("x;0;");
+        setMessage("");
         
 		if (networkhost.startsWith("\"")) {
 			networkhost = networkhost.substring(1,networkhost.length()-1);
