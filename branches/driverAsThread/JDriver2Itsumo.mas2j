@@ -14,21 +14,9 @@ MAS jdriver2itsumo {
 		driver proxy3.asl [host="localhost", port=30001]
 		agentArchClass arch.AgProxyArch
 		#2;
-		
-		/*
-		driver0 driver0.asl 
-    	agentArchClass arch.AgDriverArch 
-    	agentClass agent.SelectEvent 
-    	beliefBaseClass agent.UniqueBelsBB("gsize(_,_)","steps(_)","ally_pos(key,_,_)","corral(_,_,_,_)","target(_,_)");
-		*/
-		
-		/*
-		driver driver.asl 
-    	agentArchClass arch.DriverArch 
-    	agentClass agent.SelectEvent 
-    	beliefBaseClass agent.UniqueBelsBB("gsize(_,_)","steps(_)","ally_pos(key,_,_)","corral(_,_,_,_)","target(_,_)")
-		#9;
-		*/
+
+		help1 help.asl [host="localhost", port=30001]
+		agentArchClass arch.AgProxyArch;
 		
    aslSourcePath: "src/asl"; 
 }

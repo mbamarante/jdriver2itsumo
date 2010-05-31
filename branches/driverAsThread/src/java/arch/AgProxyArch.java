@@ -70,7 +70,10 @@ public class AgProxyArch extends AgArch {
 		
 		new Thread(proxy,"AgProxy").start();
 	
-		int agId = Integer.parseInt(getAgName().replace("driver", ""));
+		int agId;
+		if (getAgName().contains("driver"))		
+			agId = Integer.parseInt(getAgName().replace("driver", "")); else
+				agId = Integer.parseInt(getAgName().replace("help", ""));
 		
 		try {
 			proxy.sendMessage("a;"+agId+";");

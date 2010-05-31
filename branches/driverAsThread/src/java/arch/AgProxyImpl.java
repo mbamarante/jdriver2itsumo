@@ -43,6 +43,7 @@ public class AgProxyImpl implements Runnable {
 	AgProxyArch    	arq;
 	boolean        	running = true;
 	private boolean connected = false;
+	private boolean firstR = true; 
 	
 	private Socket socket;
 	private InputStream inputstream;
@@ -185,26 +186,39 @@ public class AgProxyImpl implements Runnable {
 	    	else
 	    	//solicita uma ação do agente (r=request)
 	    	if (message.charAt(0) == 'r'){
+
+//	    		logger.log(Level.INFO, "received R");
+	    		
+	    		if (firstR){
+	    			logger.log(Level.INFO, "First R System.currentTimeMillis="+Long.toString(System.currentTimeMillis()));
+	    			firstR=false;
+	    		}
+	    		
 	    		arq.delBel(Literal.parseLiteral("decide(_)"));
 	    		arq.addBel(Literal.parseLiteral("decide(something)"));
 	    		
 	    		String msg = "";
 	    		
-	    		while (true){
-	    			msg = arq.getMessage();
-	    			if (msg.length()>0)
-	    				break;
-	    		}
+	    		msg = arq.getMessage();
+//	    		logger.log(Level.INFO, "arq.getMessage()=" + msg);
 	    		
-	    		//if (msg.length()>0){
-		    		sendMessage(msg);
-		    		
+	    		if (msg.length()>0){
 		    		if (msg.contains("goto")){
 		    			arq.setMessage("");
-		    			logger.log(Level.INFO, "goto sent @ step " + message.substring(2));
+//		    			logger.log(Level.INFO, "goto sent @ System.currentTimeMillis="+Long.toString(System.currentTimeMillis()));			    		
+//		    			logger.log(Level.INFO, "goto sent @ step " + message.substring(2));
 		    		}
-		    		//arq.setMessage("x;0;");
+		    		
+	    		} else
+	    			msg = "x;0;";
+	    		
+	    		sendMessage(msg);
 	    	}
+    		if (message.charAt(0) == 'w'){
+    			//deveria receber o OD...
+    			logger.log(Level.INFO, "veículo com defeito!");
+    			sendMessage("x;0;");
+    		}
 	    	else
 	    	//fim da simulação, não processa mais mensagens
 	    	if (message.contains("end;")){
