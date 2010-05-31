@@ -47,7 +47,7 @@ public class ProxyArchAndImpl extends AgArch {
     @Override
     public void initAg(String agClass, ClassParameters bbPars, String asSrc, Settings stts) throws JasonException {
         super.initAg(agClass, bbPars, asSrc, stts);
-        logger.log(Level.INFO, "Init Agent!");
+        logger.log(Level.INFO, "Init Agent @ System.currentTimeMillis = " + System.currentTimeMillis());
         
         networkhost = stts.getUserParameter("host");
         networkport = Integer.parseInt(stts.getUserParameter("port"));

@@ -15,6 +15,7 @@ an_agent(Ag) :-
 /*beliefs*/
 status(parked). /*[parked,start_engine,driving]*/
 /*decide(nothing).*/ /*[nothing,something]*/
+act(sleep).
 
 start(0).
 goal(0).
@@ -45,6 +46,7 @@ há nada novo para fazer */
 @dr1
 +!drive(S,G): status(start_engine)
 	<-  -+status(driving);
+		-+act(help);
 		.concat("driving from ", S ," to ", G , M);
 		.print(M);
 		jia.driveOnPath(S,G). /* envia mensagem para o simulador 
@@ -53,3 +55,11 @@ há nada novo para fazer */
 @dr2
 +!drive(S,G): status(driving)
 	<-	jia.doNothing.
+	
++!goHelp(driver,G): status(parked)
+	<-	-+decide(something);
+		-+goal(G).
+		
++!doHelp(driver): status(parked) & act(help)
+	<-	.concat("car is ok!", M);
+		.send(driver,tell,msg(M)).
