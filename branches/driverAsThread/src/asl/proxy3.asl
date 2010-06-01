@@ -61,6 +61,10 @@ há nada novo para fazer */
 	 	.concat("my car is broken! need help @ node ", S ,"!", M);
 		.print(M);
 	 	.send(help0, achieve, goHelp(S)).
+
++!fixed: true
+	<- 	-+decide(something); 
+		-+status(parked).
 	 	
 //finish trip
 +status(finish): true

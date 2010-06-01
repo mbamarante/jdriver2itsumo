@@ -237,12 +237,14 @@ public class AgProxyImpl implements Runnable {
 	    		arq.delBel(Literal.parseLiteral("status(_)"));
 	    		arq.addBel(Literal.parseLiteral("status(finish)"));
 	    		
-	    		if (AgProxyImpl.class.getName().contains("help")){
-	    			
-	    			arq.delBel(Literal.parseLiteral("act(_)"));
-		    		arq.addBel(Literal.parseLiteral("act(help)"));
-	    			
-	    		}
+	    		sendMessage("x;0;");
+    			
+    		}
+    		else
+    		if (message.charAt(0) == 'h'){
+    		
+    			arq.delBel(Literal.parseLiteral("act(_)"));
+	    		arq.addBel(Literal.parseLiteral("act(help)"));
 	    		
 	    		sendMessage("x;0;");
     			
