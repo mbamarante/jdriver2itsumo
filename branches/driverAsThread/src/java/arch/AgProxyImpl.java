@@ -214,10 +214,38 @@ public class AgProxyImpl implements Runnable {
 	    		
 	    		sendMessage(msg);
 	    	}
+	    	else
     		if (message.charAt(0) == 'w'){
     			//deveria receber o OD...
-    			logger.log(Level.INFO, "veículo com defeito!");
+    			logger.log(Level.INFO, "veículo com defeito! (" + message + ")");
+    			
+	    		arq.delBel(Literal.parseLiteral("broken(_)"));
+	    		arq.addBel(Literal.parseLiteral("broken(car)"));
+    			
+	    		String od[] = message.split(";");
+	    		
+	    		arq.delBel(Literal.parseLiteral("start(_)"));
+	    		arq.addBel(Literal.parseLiteral("start(" + od[1] + ")"));
+	    		
     			sendMessage("x;0;");
+    		}
+    		else
+    		if (message.charAt(0) == 'f'){
+    			
+    			logger.log(Level.INFO, "fim da viagem! (" + message + ")");
+    			
+	    		arq.delBel(Literal.parseLiteral("status(_)"));
+	    		arq.addBel(Literal.parseLiteral("status(finish)"));
+	    		
+	    		if (AgProxyImpl.class.getName().contains("help")){
+	    			
+	    			arq.delBel(Literal.parseLiteral("act(_)"));
+		    		arq.addBel(Literal.parseLiteral("act(help)"));
+	    			
+	    		}
+	    		
+	    		sendMessage("x;0;");
+    			
     		}
 	    	else
 	    	//fim da simulação, não processa mais mensagens
