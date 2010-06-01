@@ -53,3 +53,16 @@ há nada novo para fazer */
 @dr2
 +!drive(S,G): status(driving)
 	<-	jia.doNothing.
+	
+@ah
+//+broken(car): status(driving) & has_od(S,G)
++broken(car): has_od(S,G)
+	 <- -broken(car);
+	 	.concat("my car is broken! need help @ node ", S ,"!", M);
+		.print(M);
+	 	.send(help0, achieve, goHelp(S)).
+	 	
+//finish trip
++status(finish): true
+	<-	.concat("arrived!", M);
+		.print(M).

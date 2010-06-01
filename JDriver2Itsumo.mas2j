@@ -15,7 +15,7 @@ MAS jdriver2itsumo {
 		agentArchClass arch.AgProxyArch
 		#2;
 
-		help1 help.asl [host="localhost", port=30001]
+		help0 help.asl [host="localhost", port=30001]
 		agentArchClass arch.AgProxyArch;
 		
    aslSourcePath: "src/asl"; 
