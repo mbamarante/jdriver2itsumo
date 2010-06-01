@@ -247,7 +247,7 @@ public class AgProxyImpl implements Runnable {
 	    		arq.addBel(Literal.parseLiteral("act(help)"));
 	    		
 	    		sendMessage("x;0;");
-    			
+	    		
     		}
 	    	else
 	    	//fim da simulação, não processa mais mensagens
