@@ -67,9 +67,9 @@ há nada novo para fazer */
 		
 +act(help): help(D)
 	<-	-+act(sleep);
-		.concat("car is ok!", M);
+		.concat("car fixed!", M);
 		.print(M);
-		.send(D,tell,msg(M)).
+		.send(D,achieve,fixed).
 		
 +!goHelp(G)[source(D)]: not status(parked)
 	<-	true.		
