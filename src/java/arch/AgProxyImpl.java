@@ -177,7 +177,7 @@ public class AgProxyImpl implements Runnable {
     		//inserir origem/destino 
     		if (message.contains("od;")){
     			String od[] = message.split(";");
-    			logger.log(Level.INFO, od[1] + "|" + od[2]);
+//    			logger.log(Level.INFO, od[1] + "|" + od[2]);
     			arq.delBel(Literal.parseLiteral("start(_)"));
     			arq.delBel(Literal.parseLiteral("goal(_)"));
 	    		arq.addBel(Literal.parseLiteral("start("+od[1]+")"));
@@ -188,11 +188,11 @@ public class AgProxyImpl implements Runnable {
 	    	if (message.charAt(0) == 'r'){
 
 //	    		logger.log(Level.INFO, "received R");
-	    		
-	    		if (firstR){
-	    			logger.log(Level.INFO, "First R System.currentTimeMillis="+Long.toString(System.currentTimeMillis()));
-	    			firstR=false;
-	    		}
+//	    		
+//	    		if (firstR){
+//	    			logger.log(Level.INFO, "First R System.currentTimeMillis="+Long.toString(System.currentTimeMillis()));
+//	    			firstR=false;
+//	    		}
 	    		
 	    		arq.delBel(Literal.parseLiteral("decide(_)"));
 	    		arq.addBel(Literal.parseLiteral("decide(something)"));
@@ -217,7 +217,7 @@ public class AgProxyImpl implements Runnable {
 	    	else
     		if (message.charAt(0) == 'w'){
     			//deveria receber o OD...
-    			logger.log(Level.INFO, "veículo com defeito! (" + message + ")");
+//    			logger.log(Level.INFO, "veículo com defeito!");
     			
 	    		arq.delBel(Literal.parseLiteral("broken(_)"));
 	    		arq.addBel(Literal.parseLiteral("broken(car)"));
@@ -232,7 +232,7 @@ public class AgProxyImpl implements Runnable {
     		else
     		if (message.charAt(0) == 'f'){
     			
-    			logger.log(Level.INFO, "fim da viagem! (" + message + ")");
+//    			logger.log(Level.INFO, "fim da viagem!");
     			
 	    		arq.delBel(Literal.parseLiteral("status(_)"));
 	    		arq.addBel(Literal.parseLiteral("status(finish)"));
