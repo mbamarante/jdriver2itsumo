@@ -11,7 +11,7 @@ MAS jdriver2itsumo {
    environment: env.Env1
 
    agents:		
-		driver proxy3.asl [host="localhost", port=30001]
+		driver driver.asl [host="localhost", port=30001]
 		agentArchClass arch.AgProxyArch
 		#2;
 

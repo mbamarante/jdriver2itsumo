@@ -19,10 +19,11 @@ public class driveOnPath extends DefaultInternalAction {
     	
     	int agId = -1;
     	agId = Integer.parseInt(args[0].toString().replace("driver", ""));
-        logger.log(Level.INFO, "setMessage: goto;"+args[0]+";"+args[1]+";");
     	
     	AgProxyArch arch = (AgProxyArch)ts.getUserAgArch();
     	arch.setMessage("goto;"+args[0]+";"+args[1]+";");
+
+        logger.log(Level.INFO, "(" + arch.getAgName() + ") setMessage: goto;"+args[0]+";"+args[1]+";");
     	
         // everything ok, so returns true
         return true;
