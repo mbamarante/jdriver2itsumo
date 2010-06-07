@@ -8,7 +8,7 @@
 MAS jdriver2itsumo {
    infrastructure: Centralised
 
-   environment: env.Env1
+   //environment: env.Env1
 
    agents:		
 		driver driver.asl [host="localhost", port=30001]
