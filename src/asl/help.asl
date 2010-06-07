@@ -29,10 +29,8 @@ se o motorista quer ir a algum lugar
 (has_od) e está estacionado, então ele 
 inicia sua viagem (drive) */
 @ds1
-+decide(something): status(parked) & has_od(S,G) & act(working)
++decide(something): status(parked) & has_od(S,G) & act(working) /* act(working): qdo o veículo pede ajuda*/
 	<- 	-+status(start_engine); /* update belief base */
-		//.concat("trigger: requested action; context: status(parked) & has_od(S,G)", M);
-		//.print(M);
 		!drive(S,G).
 		
 /* itsumo solicita uma ação ao motorista. 
@@ -46,7 +44,6 @@ há nada novo para fazer */
 @dr1
 +!drive(S,G): status(start_engine)
 	<-  -+status(driving);
-		//-+act(help);
 		.concat("driving from ", S ," to ", G , M);
 		.print(M);
 		jia.driveOnPath(S,G). /* envia mensagem para o simulador 
@@ -56,7 +53,7 @@ há nada novo para fazer */
 +!drive(S,G): status(driving)
 	<-	jia.doNothing.
 	
-/* help */	
+/* recebe solicitação do veículo quebrado */	
 +!goHelp(G)[source(D)]: status(parked)
 	<-	-+goal(G);
 		-+help(D);
@@ -64,7 +61,8 @@ há nada novo para fazer */
 		-+act(working);
 		.concat("driver '", D, "' need help @ node ", G ,"!", M);
 		.print(M).
-		
+	
+/* crença vem do itsumo */	
 +act(help): help(D)
 	<-	-+act(sleep);
 		.concat("car fixed!", M);
@@ -72,14 +70,4 @@ há nada novo para fazer */
 		.send(D,achieve,fixed).
 		
 +!goHelp(G)[source(D)]: not status(parked)
-	<-	true.		
-
-/*	+!finishHelp(driver): true
-	<-	-+act(sleep);
-		.concat("car is ok!", M);
-		.send(driver,tell,msg(M)).
-		
-+!finishHelp(driver): not act(working)
-	<-	true.	*/
-	
-	/* todo - itsumo informa o jason quando o veículo conclui a viagem... (fazer uma tabela baseado nos steps) */
+	<-	true.

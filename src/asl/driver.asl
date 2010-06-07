@@ -24,8 +24,6 @@ inicia sua viagem (drive) */
 @ds1
 +decide(something): status(parked) & has_od(S,G)
 	<- 	-+status(start_engine); /* update belief base */
-		//.concat("trigger: requested action; context: status(parked) & has_od(S,G)", M);
-		//.print(M);
 		!drive(S,G).
 		
 /* itsumo solicita uma ação ao motorista. 
@@ -49,7 +47,6 @@ há nada novo para fazer */
 	<-	jia.doNothing.
 	
 @ah
-//+broken(car): status(driving) & has_od(S,G)
 +broken(car): has_od(S,G)
 	 <- -broken(car);
 	 	.concat("my car is broken! need help @ node ", S ,"!", M);
